@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PartManagerPlugin
 {
@@ -11,45 +12,31 @@ namespace PartManagerPlugin
         private List<KeyValuePair<string, string>> _values = new List<KeyValuePair<string, string>>();
         private List<ConfigNode> _nodes = new List<ConfigNode>();
 
-        public ConfigNode()
-        {
-        }
+        public ConfigNode() { }
 
         public ConfigNode(string name)
         {
             this.name = name;
         }
 
-        public ConfigNode[] nodes
+        public ConfigNode[] Nodes
         {
-            get
-            {
-                return _nodes.ToArray();
-            }
+            get { return _nodes.ToArray(); }
         }
 
-        public KeyValuePair<string, string>[] values
+        public KeyValuePair<string, string>[] Values
         {
-            get
-            {
-                return _values.ToArray();
-            }
+	        get { return _values.ToArray(); }
         }
 
         public int CountNodes
         {
-            get
-            {
-                return this._nodes.Count;
-            }
+            get { return _nodes.Count; }
         }
 
         public int CountValues
         {
-            get
-            {
-                return this._values.Count;
-            }
+            get { return _values.Count; }
         }
 
         public ConfigNode AddConfigNode(ConfigNode node)
@@ -60,7 +47,7 @@ namespace PartManagerPlugin
 
         public void AddValue(string key, string value)
         {
-            KeyValuePair<string, string> kvp = new KeyValuePair<string, string>(key, value);
+            var kvp = new KeyValuePair<string, string>(key, value);
             _values.Add(kvp);
         }
 
@@ -72,12 +59,12 @@ namespace PartManagerPlugin
 
         public void ClearNodes()
         {
-            this._nodes.Clear();
+            _nodes.Clear();
         }
 
         public void ClearValues()
         {
-            this._values.Clear();
+            _values.Clear();
         }
 
         public ConfigNode GetNode(string name, int index)
@@ -87,11 +74,9 @@ namespace PartManagerPlugin
             {
                 if (node.name == name)
                 {
-                    if (currentIndex == index)
-                    {
-                        return node;
-                    }
-                    currentIndex++;
+	                if (currentIndex == index)
+		                return node;
+	                currentIndex++;
                 }
             }
             return null;
@@ -101,92 +86,47 @@ namespace PartManagerPlugin
         {
             foreach (ConfigNode node in _nodes)
             {
-                if (node.name == name)
-                {
-                    return node;
-                }
+	            if (node.name == name)
+		            return node;
             }
             return null;
         }
 
         public ConfigNode GetNodeID(string id)
         {
-            foreach (ConfigNode node in _nodes)
-            {
-                if (node.id == id)
-                {
-                    return node;
-                }
-            }
-            return null;
+	        return _nodes.FirstOrDefault(node => node.id == id);
         }
 
-        public ConfigNode[] GetNodes(string name)
+	    public ConfigNode[] GetNodes(string name)
         {
-            List<ConfigNode> foundNodes = new List<ConfigNode>();
-            foreach (ConfigNode node in _nodes)
-            {
-                if (node.name == name)
-                {
-                    foundNodes.Add(node);
-                }
-            }
-            return foundNodes.ToArray();
+	        return _nodes.Where(node => node.name == name).ToArray();
         }
 
         public string GetValue(string name, int index)
         {
-            int currentIndex = 0;
-            foreach (KeyValuePair<string, string> value in _values)
+            var currentIndex = 0;
+            foreach (var value in _values.Where(value => value.Key == name))
             {
-                if (value.Key == name)
-                {
-                    if (currentIndex == index)
-                    {
-                        return value.Value;
-                    }
-                    currentIndex++;
-                }
+	            if (currentIndex == index)
+		            return value.Value;
+	            currentIndex++;
             }
             return null;
         }
 
         public string GetValue(string name)
         {
-            foreach (KeyValuePair<string, string> value in _values)
-            {
-                if (value.Key == name)
-                {
-                    return value.Value;
-                }
-            }
-            return null;
+	        return (from value in _values where value.Key == name select value.Value).FirstOrDefault();
         }
 
-        public string[] GetValues(string name)
+	    public string[] GetValues(string name)
         {
-            List<string> foundValues = new List<string>();
-            foreach (KeyValuePair<string, string> value in _values)
-            {
-                if (value.Key == name)
-                {
-                    foundValues.Add(value.Value);
-                }
-            }
-            return foundValues.ToArray();
+	        return (from value in _values where value.Key == name select value.Value).ToArray();
         }
 
         public string[] GetValuesStartsWith(string name)
         {
-            List<string> foundValues = new List<string>();
-            foreach (KeyValuePair<string, string> value in _values)
-            {
-                if (value.Key.StartsWith(name))
-                {
-                    foundValues.Add(value.Value);
-                }
-            }
-            return foundValues.ToArray();
+	        return (from value in _values where value.Key.StartsWith(name) select value.Value).ToArray();
         }
 
         public bool HasNode()
@@ -196,46 +136,25 @@ namespace PartManagerPlugin
 
         public bool HasNode(string name)
         {
-            foreach (ConfigNode cn in _nodes)
-            {
-                if (cn.name == name)
-                {
-                    return true;
-                }
-            }
-            return false;
+	        return _nodes.Any(cn => cn.name == name);
         }
 
-        public bool HasNodeID(string id)
-        {
-            foreach (ConfigNode cn in _nodes)
-            {
-                if (cn.id == id)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+	    public bool HasNodeId(string id)
+	    {
+		    return _nodes.Any(cn => cn.id == id);
+	    }
 
-        public bool HasValue()
+	    public bool HasValue()
         {
-            return this._values.Count > 0;
+            return _values.Count > 0;
         }
 
         public bool HasValue(string name)
         {
-            foreach (KeyValuePair<string, string> value in _values)
-            {
-                if (value.Key == name)
-                {
-                    return true;
-                }
-            }
-            return false;
+	        return _values.Any(value => value.Key == name);
         }
 
-        public static ConfigNode Load(string fileFullName)
+	    public static ConfigNode Load(string fileFullName)
         {
             return ConfigNodeReader.FileToConfigNode(fileFullName);
         }
@@ -250,11 +169,9 @@ namespace PartManagerPlugin
         {
             foreach (ConfigNode node in _nodes.ToArray())
             {
-                if (node.name == name)
-                {
-                    _nodes.Remove(node);
-                    return;
-                }
+	            if (node.name != name) continue;
+	            _nodes.Remove(node);
+	            return;
             }
         }
 
@@ -262,10 +179,8 @@ namespace PartManagerPlugin
         {
             foreach (ConfigNode node in _nodes.ToArray())
             {
-                if (node.name == name)
-                {
-                    _nodes.Remove(node);
-                }
+	            if (node.name == name)
+		            _nodes.Remove(node);
             }
         }
 
@@ -273,10 +188,8 @@ namespace PartManagerPlugin
         {
             foreach (ConfigNode node in _nodes.ToArray())
             {
-                if (node.name.StartsWith(name))
-                {
-                    _nodes.Remove(node);
-                }
+	            if (node.name.StartsWith(name))
+		            _nodes.Remove(node);
             }
         }
 
@@ -284,30 +197,24 @@ namespace PartManagerPlugin
         {
             foreach (KeyValuePair<string, string> value in _values.ToArray())
             {
-                if (value.Key == name)
-                {
-                    _values.Remove(value);
-                    return;
-                }
+	            if (value.Key != name) continue;
+	            _values.Remove(value);
+	            return;
             }
         }
 
         public void RemoveValues(string[] names)
         {
-            foreach (string name in names)
-            {
-                RemoveValues(name);
-            }
+	        foreach (string name in names)
+		        RemoveValues(name);
         }
 
         public void RemoveValues(string name)
         {
             foreach (KeyValuePair<string, string> value in _values.ToArray())
             {
-                if (value.Key == name)
-                {
-                    _values.Remove(value);
-                }
+	            if (value.Key == name)
+		            _values.Remove(value);
             }
         }
 
@@ -315,10 +222,8 @@ namespace PartManagerPlugin
         {
             foreach (KeyValuePair<string, string> value in _values.ToArray())
             {
-                if (value.Key.StartsWith(name))
-                {
-                    _values.Remove(value);
-                }
+	            if (value.Key.StartsWith(name))
+		            _values.Remove(value);
             }
         }
 
@@ -348,7 +253,7 @@ namespace PartManagerPlugin
         public bool SetValue(string name, string newValue, int index)
         {
             //This is probably incorrect, but it already doesn't make sense in the first place...
-            KeyValuePair<string, string> oldValue = new KeyValuePair<string, string>(name, GetValue(name, index));
+            var oldValue = new KeyValuePair<string, string>(name, GetValue(name, index));
             if (oldValue.Value == null)
             {
                 //Index doesn't exist - Add it to the node list anyway.
