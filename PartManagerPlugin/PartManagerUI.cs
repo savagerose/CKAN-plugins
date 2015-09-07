@@ -297,12 +297,6 @@ namespace PartManagerPlugin
 			_partViewers.Add(new PartViewer(part, isDisabled));
 			if (_partViewers.Last().FileFound)
 				_partViewers.Last().Show();
-
-			for (var index = 0; index < _partViewers.Count; index++)
-			{
-				if (_partViewers[index].IsDisposed)
-					_partViewers.Remove(_partViewers[index]);
-			}
 		}
 
 	    private void ApplyFilterButton_Click(object sender, EventArgs e)
