@@ -6,41 +6,38 @@ namespace PartManagerPlugin
 {
     public static class Cache
     {
+		private static string PartManagerPath
+	    {
+		    get
+		    {
+			    var path = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "PartManager");
+				if (!Directory.Exists(path))
+					Directory.CreateDirectory(path);
+				return path;
+		    }
+	    }
+
+	    private static string CachePath
+	    {
+		    get
+		    {
+				var path = Path.Combine(PartManagerPath, "cache");
+				if (!Directory.Exists(path))
+					Directory.CreateDirectory(path);
+				return path;
+		    }
+	    }
 
         public static void RemovePartFromCache(string part)
         {
-            var partManagerPath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "PartManager");
-            if (!Directory.Exists(partManagerPath))
-            {
-                Directory.CreateDirectory(partManagerPath);
-            }
-
-            var cachePath = Path.Combine(partManagerPath, "cache");
-            if (!Directory.Exists(cachePath))
-            {
-                Directory.CreateDirectory(cachePath);
-            }
-
-            var fullPath = Path.Combine(cachePath, part);
+			var fullPath = Path.Combine(CachePath, part);
             File.Delete(fullPath);
         }
 
         public static void MovePartToCache(string part)
         {
-            var partManagerPath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "PartManager");
-            if (!Directory.Exists(partManagerPath))
-            {
-                Directory.CreateDirectory(partManagerPath);
-            }
-
-            var cachePath = Path.Combine(partManagerPath, "cache");
-            if (!Directory.Exists(cachePath))
-            {
-                Directory.CreateDirectory(cachePath);
-            }
-
-            var fullPath = Path.Combine(Main.Instance.CurrentInstance.GameDir(), part);
-            var targetPath = Path.Combine(cachePath, part);
+	        var fullPath = Path.Combine(Main.Instance.CurrentInstance.GameDir(), part);
+			var targetPath = Path.Combine(CachePath, part);
 
             try
             {
@@ -53,19 +50,7 @@ namespace PartManagerPlugin
 
         public static void MovePartFromCache(string part)
         {
-            var partManagerPath = Path.Combine(Main.Instance.CurrentInstance.CkanDir(), "PartManager");
-            if (!Directory.Exists(partManagerPath))
-            {
-                Directory.CreateDirectory(partManagerPath);
-            }
-
-            var cachePath = Path.Combine(partManagerPath, "cache");
-            if (!Directory.Exists(cachePath))
-            {
-                Directory.CreateDirectory(cachePath);
-            }
-
-            var fullPath = Path.Combine(cachePath, part);
+			var fullPath = Path.Combine(CachePath, part);
             var targetPath = Path.Combine(Main.Instance.CurrentInstance.GameDir(), part);
 
             try

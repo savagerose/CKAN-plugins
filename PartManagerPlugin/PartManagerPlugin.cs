@@ -1,52 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using CKAN;
+using Version = CKAN.Version;
 
 namespace PartManagerPlugin
 {
 
     public class PartManagerConfig
     {
-        public List<KeyValuePair<string, string>> disabledParts;
+        public List<KeyValuePair<string, string>> DisabledParts;
     }
 
-    public class PartManagerPlugin : CKAN.IGUIPlugin
+    public class PartManagerPlugin : IGUIPlugin
     {
 
-        private readonly CKAN.Version VERSION = new CKAN.Version("v1.1.0");
+        private readonly Version _version = new Version("v1.1.0");
 
-        private PartManagerUI m_UI = null;
+        private PartManagerUI _mUi = null;
 
         public override void Initialize()
         {
-            var tabPage = new TabPage();
-            tabPage.Name = "PartManager";
-            tabPage.Text = "PartManager";
+            var tabPage = new TabPage {Name = "Part Manager", Text = "Part Manager"};
 
-            m_UI = new PartManagerUI();
-            m_UI.Dock = DockStyle.Fill;
-            tabPage.Controls.Add(m_UI);
+	        _mUi = new PartManagerUI {Dock = DockStyle.Fill};
+	        tabPage.Controls.Add(_mUi);
 
-            Main.modChangedCallback += m_UI.OnModChanged;
-            Main.Instance.m_TabController.m_TabPages.Add("PartManager", tabPage);
-            Main.Instance.m_TabController.ShowTab("PartManager", 1, false);
+			Main.modChangedCallback += _mUi.OnModChanged;
+            Main.Instance.m_TabController.m_TabPages.Add("Part Manager", tabPage);
+            Main.Instance.m_TabController.ShowTab("Part Manager", 1, false);
         }
 
         public override void Deinitialize()
         {
-            Main.modChangedCallback -= m_UI.OnModChanged;
-            Main.Instance.m_TabController.HideTab("PartManager");
-            Main.Instance.m_TabController.m_TabPages.Remove("PartManager");
+			Main.modChangedCallback -= _mUi.OnModChanged;
+            Main.Instance.m_TabController.HideTab("Part Manager");
+            Main.Instance.m_TabController.m_TabPages.Remove("Part Manager");
         }
 
         public override string GetName()
         {
-            return "PartManager by nlight";
+            return "Part Manager by nlight" + Environment.NewLine + "Updated by Gribbleshnibit8";
         }
 
-        public override CKAN.Version GetVersion()
+        public override Version GetVersion()
         {
-            return VERSION;
+            return _version;
         }
 
     }

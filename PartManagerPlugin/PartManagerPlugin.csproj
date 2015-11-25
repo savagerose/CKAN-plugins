@@ -30,9 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ckan, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Desktop\ckan.exe</HintPath>
+    <Reference Include="ckan">
+      <HintPath>G:\Games\Kerbal Space Program\ckan.exe</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,6 +54,12 @@
     <Compile Include="PartManagerUI.Designer.cs">
       <DependentUpon>PartManagerUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="PartViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PartViewer.Designer.cs">
+      <DependentUpon>PartViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PartManagerPlugin.cs" />
   </ItemGroup>
@@ -62,10 +67,13 @@
     <EmbeddedResource Include="PartManagerUI.resx">
       <DependentUpon>PartManagerUI.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="PartViewer.resx">
+      <DependentUpon>PartViewer.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y PartManagerPlugin.dll C:\Users\nlight\Desktop\testksp3\CKAN\Plugins\</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y PartManagerPlugin.dll "G:\Games\Kerbal Space Program\Kerbal Space Program\CKAN\Plugins\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
